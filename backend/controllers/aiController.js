@@ -189,4 +189,38 @@ const analyzeResumeQuality = async (req, res) => {
   }
 };
 
-module.exports = { generateSummary, improveContent, generateSkills, generateCoverLetter, generateResume, analyzeResumeQuality };
+const tailorToJob = async (req, res) => {
+  try {
+    const { resume, jobDescription } = req.body;
+    const prompt = `You are an expert resume tailor. Given this resume JSON and a job description, rewrite the experience descriptions, summary, and skills to match the job description. Keep the same structure but optimize keywords and highlight relevant achievements.
+
+Job Description: "${jobDescription}"
+
+Resume: ${JSON.stringify(resume)}
+
+Return the entire resume JSON with updated experience descriptions, summary (if needed), and skills. Keep all other fields unchanged. Return ONLY valid JSON.`;
+
+    let aiResponse = await getAIResponse(prompt, 3000);
+    let tailored;
+    if (aiResponse) {
+      try { tailored = JSON.parse(aiResponse); }
+      catch {
+        const match = aiResponse.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (match) { try { tailored = JSON.parse(match[1]); } catch { tailored = null; } }
+        else { tailored = null; }
+      }
+    }
+    if (!tailored || !tailored.personalInfo) {
+      tailored = {
+        ...resume,
+        personalInfo: { ...resume.personalInfo, summary: resume.personalInfo?.summary || 'Professional with relevant experience.' }
+      };
+    }
+    await AILog.create({ userId: req.user._id, prompt, aiResponse: JSON.stringify(tailored), type: 'analysis' });
+    res.json({ resume: tailored });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { generateSummary, improveContent, generateSkills, generateCoverLetter, generateResume, analyzeResumeQuality, tailorToJob };

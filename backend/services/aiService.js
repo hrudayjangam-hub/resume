@@ -3,7 +3,7 @@ const axios = require('axios');
 const AI_PROVIDER = process.env.AI_PROVIDER || 'openrouter';
 const AI_MODEL = process.env.AI_MODEL || 'openai/gpt-4o-mini';
 
-const callOpenRouter = async (prompt) => {
+const callOpenRouter = async (prompt, maxTokens = 2000) => {
   const key = process.env.OPENROUTER_API_KEY;
   if (!key || key === 'your_openrouter_api_key') {
     console.log('OpenRouter key missing');
@@ -16,7 +16,7 @@ const callOpenRouter = async (prompt) => {
         model: AI_MODEL,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
-        max_tokens: 500
+        max_tokens: maxTokens
       },
       {
         headers: {
@@ -54,12 +54,12 @@ const callGemini = async (prompt) => {
   }
 };
 
-const getAIResponse = async (prompt) => {
+const getAIResponse = async (prompt, maxTokens = 2000) => {
   if (AI_PROVIDER === 'gemini') {
     const result = await callGemini(prompt);
     if (result) return result;
   }
-  const result = await callOpenRouter(prompt);
+  const result = await callOpenRouter(prompt, maxTokens);
   if (result) return result;
   return null;
 };
