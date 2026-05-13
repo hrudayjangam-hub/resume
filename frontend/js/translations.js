@@ -1,5 +1,5 @@
 const languages = {
-  en: 'English', hi: 'हिन्दी', es: 'Español', fr: 'Français',
+  en: 'English', hi: 'हिन्दी', te: 'తెలుగు', es: 'Español', fr: 'Français',
   de: 'Deutsch', 'zh-CN': '中文', ar: 'العربية', pt: 'Português',
   ru: 'Русский', ja: '日本語', it: 'Italiano', ko: '한국어'
 };
@@ -67,6 +67,38 @@ const translations = {
     'templates.title': 'अपना टेम्पलेट चुनें', 'templates.subtitle': 'अपने रिज़्यूमे के लिए एक प्रोफेशनल टेम्पलेट चुनें',
     'loading': 'लोड हो रहा है...', 'saving': 'सेव हो रहा है...', 'saved': 'बदलाव सेव हो गए',
     'close': 'बंद करें', 'cancel': 'रद्द करें', 'confirm': 'पुष्टि करें', 'error': 'कुछ गलत हो गया', 'success': 'सफल'
+  },
+
+  te: {
+    'nav.home': 'హోమ్', 'nav.dashboard': 'డాష్‌బోర్డ్', 'nav.editor': 'ఎడిటర్',
+    'nav.templates': 'టెంప్లేట్లు', 'nav.profile': 'ప్రొఫైల్', 'nav.signIn': 'సైన్ ఇన్', 'nav.logout': 'లాగ్ అవుట్',
+    'hero.badge': 'AI ఆధారితం',
+    'hero.title': 'AIతో మీ <span class="highlight">డ్రీమ్ రెజ్యూమ్</span>ను రూపొందించండి',
+    'hero.subtitle': 'నిమిషాలలో ప్రొఫెషనల్, ATS-ఆప్టిమైజ్ చేసిన రెజ్యూమ్‌లను సృష్టించండి. స్మార్ట్ AI సూచనలు, రియల్-టైమ్ ప్రివ్యూ మరియు అందమైన టెంప్లేట్లు — అన్నీ ఒకే చోట.',
+    'hero.cta1': 'ఉచితంగా ప్రారంభించండి', 'hero.cta2': 'టెంప్లేట్లు చూడండి',
+    'features.title': 'మీకు కావలసినవన్నీ', 'features.subtitle': 'పర్ఫెక్ట్ రెజ్యూమ్ సృష్టించడానికి శక్తివంతమైన సాధనాలు',
+    'features.ai.title': 'AI ఆధారితం', 'features.ai.desc': 'మీ పరిశ్రమకు అనుగుణంగా సారాంశాలు, నైపుణ్యాలు మరియు మెరుగుదలల కోసం స్మార్ట్ సూచనలు.',
+    'features.live.title': 'లైవ్ ఎడిటింగ్', 'features.live.desc': 'మీరు టైప్ చేస్తున్నప్పుడు రియల్-టైమ్ ప్రివ్యూ. స్మార్ట్ రిఫ్రెష్ టెక్నాలజీతో మార్పులను తక్షణమే చూడండి.',
+    'features.templates.title': 'అందమైన టెంప్లేట్లు', 'features.templates.desc': 'ప్రొఫెషనల్‌గా డిజైన్ చేసిన టెంప్లేట్లు ATS-ఫ్రెండ్లీ మరియు దృశ్యపరంగా అద్భుతంగా ఉంటాయి.',
+    'features.pdf.title': 'PDF ఎక్స్‌పోర్ట్', 'features.pdf.desc': 'ఒక క్లిక్‌తో అధిక-నాణ్యత, ప్రింట్-రెడీ PDFలను డౌన్‌లోడ్ చేయండి.',
+    'features.theme.title': 'డార్క్/లైట్ మోడ్', 'features.theme.desc': 'పగలు మరియు రాత్రికి ఆటోమేటిక్ థీమ్ మార్పుతో సౌకర్యవంతంగా పని చేయండి.',
+    'features.cloud.title': 'క్లౌడ్ సేవ్', 'features.cloud.desc': 'మీ అన్ని రెజ్యూమ్‌లు క్లౌడ్‌లో సురక్షితంగా సేవ్ చేయబడతాయి. ఎక్కడి నుండైనా యాక్సెస్ చేయండి.',
+    'footer.text': 'ప్రేమతో తయారు చేయబడింది',
+    'auth.login.title': 'తిరిగి స్వాగతం', 'auth.login.subtitle': 'మీ ఖాతాను కొనసాగించడానికి సైన్ ఇన్ చేయండి', 'auth.login.btn': 'సైన్ ఇన్',
+    'auth.register.title': 'ఖాతాను సృష్టించండి', 'auth.register.subtitle': 'మీ ప్రొఫెషనల్ రెజ్యూమ్ నిర్మించడం ప్రారంభించండి', 'auth.register.btn': 'ఖాతాను సృష్టించండి',
+    'auth.name': 'పూర్తి పేరు', 'auth.email': 'ఇమెయిల్', 'auth.password': 'పాస్‌వర్డ్', 'auth.forgot': 'పాస్‌వర్డ్ మర్చిపోయారా?',
+    'auth.noAccount': 'ఖాతా లేదా?', 'auth.hasAccount': 'ఇప్పటికే ఖాతా ఉందా?',
+    'dash.title': 'డాష్‌బోర్డ్', 'dash.newResume': 'కొత్త రెజ్యూమ్',
+    'dash.stats.total': 'మొత్తం రెజ్యూమ్‌లు', 'dash.stats.edited': 'ఈ వారం సవరించినవి', 'dash.stats.ats': 'ATS టెంప్లేట్లు', 'dash.stats.ai': 'AI సహాయం',
+    'dash.empty': 'ఇంకా రెజ్యూమ్‌లు లేవు. మీ మొదటిదాన్ని సృష్టించండి!', 'dash.edit': 'సవరించు', 'dash.delete': 'తొలగించు',
+    'editor.save': 'సేవ్', 'editor.pdf': 'PDF', 'editor.autoResume': 'ఆటో రెజ్యూమ్', 'editor.suggestions': 'సూచనలు',
+    'editor.summary': 'సారాంశం', 'editor.improve': 'మెరుగుపరచు', 'editor.skills': 'నైపుణ్యాలు', 'editor.coverLetter': 'కవర్ లెటర్',
+    'editor.jobMatch': 'జాబ్ మ్యాచ్', 'editor.rewrite': 'తిరిగి వ్రాయండి', 'editor.bullets': 'బుల్లెట్లు',
+    'section.personal': 'వ్యక్తిగతం', 'section.education': 'విద్య', 'section.experience': 'అనుభవం', 'section.skills': 'నైపుణ్యాలు',
+    'section.certs': 'సర్టిఫికెట్లు', 'section.achievements': 'విజయాలు', 'section.projects': 'ప్రాజెక్ట్‌లు',
+    'templates.title': 'మీ టెంప్లేట్ ఎంచుకోండి', 'templates.subtitle': 'మీ రెజ్యూమ్ కోసం ప్రొఫెషనల్‌గా డిజైన్ చేసిన టెంప్లేట్ ఎంచుకోండి',
+    'loading': 'లోడ్ అవుతోంది...', 'saving': 'సేవ్ అవుతోంది...', 'saved': 'మార్పులు సేవ్ చేయబడ్డాయి',
+    'close': 'మూసివేయి', 'cancel': 'రద్దు చేయి', 'confirm': 'నిర్ధారించు', 'error': 'ఏదో తప్పు జరిగింది', 'success': 'విజయం'
   },
 
   es: {

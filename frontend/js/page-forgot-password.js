@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   loadNavbar();
+  translatePage();
   document.getElementById('forgotForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
