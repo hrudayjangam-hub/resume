@@ -14,33 +14,34 @@
       <div class="auth-card">
         <div class="auth-header">
           <div class="logo-icon">🚀</div>
-          <h1>Get Started</h1>
-          <p>Create your free account</p>
+          <h1 data-i18n="auth.register.title">Get Started</h1>
+          <p data-i18n="auth.register.subtitle">Create your free account</p>
         </div>
         <div id="errorAlert" class="alert alert-error"></div>
         <form id="registerForm">
           <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" class="form-input" id="name" placeholder="John Doe" required>
+            <label data-i18n="auth.name">Full Name</label>
+            <input type="text" class="form-input" id="name" data-i18n-placeholder="auth.name" placeholder="John Doe" required>
           </div>
           <div class="form-group">
-            <label>Email</label>
-            <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
+            <label data-i18n="auth.email">Email</label>
+            <input type="email" class="form-input" id="email" data-i18n-placeholder="auth.email" placeholder="you@example.com" required>
           </div>
           <div class="form-group">
-            <label>Password</label>
+            <label data-i18n="auth.password">Password</label>
             <input type="password" class="form-input" id="password" placeholder="At least 6 characters" minlength="6" required>
           </div>
-          <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" data-i18n="auth.register.btn">Create Account</button>
         </form>
         <div class="auth-footer">
-          Already have an account? <a href="/login.html">Sign in</a>
+          <span data-i18n="auth.hasAccount">Already have an account?</span> <a href="/login.html">Sign in</a>
         </div>
       </div>
     </div>
   </div>
   <script src="/js/api.js?v=3"></script>
   <script src="/js/auth.js?v=3"></script>
+  <script src="/js/translations.js"></script>
   <script src="/js/page-register.js"></script>
 </body>
 </html>

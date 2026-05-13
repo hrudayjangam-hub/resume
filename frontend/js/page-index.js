@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   loadNavbar('home');
+  translatePage();
   initScrollReveal();
 });
 

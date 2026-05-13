@@ -8,6 +8,7 @@ const templates = [
 
 document.addEventListener('DOMContentLoaded', () => {
   loadNavbar('templates');
+  translatePage();
   const grid = document.getElementById('templateGrid');
   grid.innerHTML = templates.map(t => `
     <div class="template-card fade-in" data-template="${t.id}" onclick="selectTemplate('${t.id}')">

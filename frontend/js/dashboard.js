@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   loadNavbar('dashboard');
+  translatePage();
   const user = api.getUser();
   if (!user) {
     window.location.href = '/login.html';

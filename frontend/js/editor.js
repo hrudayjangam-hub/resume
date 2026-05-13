@@ -4,6 +4,7 @@ let activeSection = 'personalInfo';
 
 document.addEventListener('DOMContentLoaded', async () => {
   loadNavbar('editor');
+  translatePage();
   const params = new URLSearchParams(window.location.search);
   resumeId = params.get('id');
   if (!resumeId) {
