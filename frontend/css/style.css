@@ -639,13 +639,15 @@ a:hover { color: var(--primary-hover); }
   flex: 1;
   background: var(--bg);
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 32px;
   display: flex;
   justify-content: center;
 }
 
 .resume-preview {
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
   min-height: 1100px;
   background: #fff;
   box-shadow: var(--shadow-xl);
@@ -1266,6 +1268,11 @@ a:hover { color: var(--primary-hover); }
   .container { padding: 0 16px; }
   .tabs { overflow-x: auto; }
   .tab { white-space: nowrap; padding: 10px 14px; }
+}
+
+@media (max-width: 900px) {
+  .resume-preview { padding: 32px 28px; }
+  .resume-preview .rp-name { font-size: 24px; }
 }
 
 @media (max-width: 480px) {

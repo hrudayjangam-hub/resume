@@ -23,6 +23,8 @@ const resumeSchema = new mongoose.Schema({
 
 const Resume = mongoose.model('Resume', resumeSchema);
 
+// Usage: node create_resume.js         (creates Rahul Sharma's resume)
+//        node create_resume.js --priya (creates Priya Verma's resume)
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI);
   const db = mongoose.connection.db;
@@ -34,7 +36,90 @@ async function main() {
   const userId = users[0]._id;
   console.log('Using user:', users[0].name, users[0].email);
 
-  const resumeData = {
+  const isPriya = process.argv.includes('--priya');
+  const resumeData = isPriya ? {
+    userId,
+    title: 'Priya Verma - Frontend Developer Resume',
+    template: 'modern',
+    personalInfo: {
+      fullName: 'Priya Verma',
+      email: 'priya.verma@email.com',
+      phone: '+91 98765 43210',
+      location: 'New Delhi, India',
+      linkedin: 'linkedin.com/in/priyaverma',
+      github: 'github.com/priyaverma',
+      portfolio: 'priyaverma.dev',
+      title: 'Frontend Developer',
+      summary: 'Creative and detail-oriented Frontend Developer with a B.Tech in Information Technology and hands-on experience building responsive web applications. Proficient in HTML, CSS, JavaScript, React, and modern CSS frameworks like Tailwind CSS and Bootstrap. Known for strong communication skills, teamwork, and a fast-learning attitude. Passionate about crafting clean, user-friendly, and ATS-optimized interfaces that deliver exceptional user experiences.'
+    },
+    education: [{
+      institution: 'Delhi Technological University',
+      degree: 'B.Tech',
+      field: 'Information Technology',
+      startDate: '2021-08',
+      endDate: '2025-06',
+      gpa: '8.2/10',
+      description: 'Relevant coursework: Data Structures & Algorithms, Web Development, Database Management, UI/UX Design, Software Engineering, Computer Networks.'
+    }],
+    experience: [{
+      company: 'TechSolutions Pvt. Ltd.',
+      position: 'Frontend Developer Intern',
+      location: 'New Delhi, India',
+      startDate: '2024-06',
+      endDate: '2024-12',
+      current: false,
+      description: 'Developed responsive UI components using React and Tailwind CSS, improving page load speed by 30%. Collaborated with the design team to implement pixel-perfect Figma mockups. Participated in daily stand-ups and code reviews as part of an Agile team.',
+      achievements: ['Reduced page load time by 30% through code splitting and lazy loading', 'Built 20+ reusable React components adopted across 3 projects']
+    }],
+    skills: [
+      { name: 'HTML', level: 'expert' },
+      { name: 'CSS', level: 'expert' },
+      { name: 'JavaScript', level: 'advanced' },
+      { name: 'React', level: 'advanced' },
+      { name: 'Tailwind CSS', level: 'advanced' },
+      { name: 'Bootstrap', level: 'advanced' },
+      { name: 'Git', level: 'intermediate' },
+      { name: 'GitHub', level: 'intermediate' },
+      { name: 'UI/UX Design', level: 'intermediate' },
+      { name: 'Responsive Design', level: 'advanced' },
+      { name: 'Figma', level: 'intermediate' },
+      { name: 'TypeScript', level: 'intermediate' }
+    ],
+    certifications: [],
+    projects: [
+      {
+        title: 'E-commerce Website',
+        description: 'Built a fully responsive e-commerce platform with React and Tailwind CSS featuring product listings, cart management, user authentication, and payment integration. Implemented state management using React Context API and optimized performance with lazy loading.',
+        technologies: ['React', 'Tailwind CSS', 'Node.js', 'MongoDB', 'Stripe API'],
+        url: '',
+        startDate: '2024-09',
+        endDate: '2024-11'
+      },
+      {
+        title: 'Weather App',
+        description: 'Developed a real-time weather application using vanilla JavaScript and OpenWeatherMap API. Features include geolocation-based weather data, 7-day forecasts, search by city, dark mode, and responsive design for all screen sizes.',
+        technologies: ['HTML', 'CSS', 'JavaScript', 'OpenWeatherMap API', 'Geolocation API'],
+        url: '',
+        startDate: '2024-03',
+        endDate: '2024-04'
+      },
+      {
+        title: 'AI Chatbot UI',
+        description: 'Designed and developed an intuitive chatbot interface using React with streaming message support, typing indicators, and theme customization. Focused on accessibility, smooth animations, and mobile-first responsive design.',
+        technologies: ['React', 'CSS Modules', 'WebSocket', 'Framer Motion'],
+        url: '',
+        startDate: '2024-06',
+        endDate: '2024-08'
+      }
+    ],
+    customization: {
+      primaryColor: '#2563eb',
+      fontFamily: 'Inter',
+      fontSize: '14px',
+      spacing: 'comfortable',
+      sectionOrder: ['personalInfo', 'summary', 'experience', 'education', 'skills', 'projects']
+    }
+  } : {
     userId,
     title: 'Rahul Sharma - Software Engineer Resume',
     template: 'modern',
@@ -118,6 +203,7 @@ async function main() {
   const resume = await Resume.create(resumeData);
   console.log('Resume created successfully!');
   console.log('ID:', resume._id);
+  console.log('Name:', isPriya ? 'Priya Verma' : 'Rahul Sharma');
   console.log('Open: http://localhost:5000/editor.html?id=' + resume._id);
   await mongoose.disconnect();
 }
