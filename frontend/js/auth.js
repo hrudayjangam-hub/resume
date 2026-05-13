@@ -47,12 +47,12 @@ function loadNavbar(activePage) {
 
   const isLoggedIn = !!token;
   const navLinks = isLoggedIn ? `
-    <a href="/dashboard.html" class="${activePage === 'dashboard' ? 'active' : ''}">Dashboard</a>
-    <a href="/editor.html" class="${activePage === 'editor' ? 'active' : ''}">Editor</a>
-    <a href="/templates.html" class="${activePage === 'templates' ? 'active' : ''}">Templates</a>
+    <a href="/dashboard.html" class="${activePage === 'dashboard' ? 'active' : ''}" data-i18n="nav.dashboard">${t('nav.dashboard')}</a>
+    <a href="/editor.html?id=new" class="${activePage === 'editor' ? 'active' : ''}" data-i18n="nav.editor">${t('nav.editor')}</a>
+    <a href="/templates.html" class="${activePage === 'templates' ? 'active' : ''}" data-i18n="nav.templates">${t('nav.templates')}</a>
   ` : `
-    <a href="/index.html" class="${activePage === 'home' ? 'active' : ''}">Home</a>
-    <a href="/templates.html" class="${activePage === 'templates' ? 'active' : ''}">Templates</a>
+    <a href="/index.html" class="${activePage === 'home' ? 'active' : ''}" data-i18n="nav.home">${t('nav.home')}</a>
+    <a href="/templates.html" class="${activePage === 'templates' ? 'active' : ''}" data-i18n="nav.templates">${t('nav.templates')}</a>
   `;
 
   navbar.innerHTML = `
