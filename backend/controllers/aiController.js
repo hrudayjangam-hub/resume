@@ -223,4 +223,46 @@ Return the entire resume JSON with updated experience descriptions, summary (if 
   }
 };
 
-module.exports = { generateSummary, improveContent, generateSkills, generateCoverLetter, generateResume, analyzeResumeQuality, tailorToJob };
+const rewriteContent = async (req, res) => {
+  try {
+    const { content, tone } = req.body;
+    const toneGuide = {
+      professional: 'Make it sound professional, formal, and confident.',
+      concise: 'Make it very concise and punchy. Remove fluff.',
+      achievement: 'Focus on achievements. Use action verbs and quantify results.',
+      ats: 'Optimize for ATS keyword scanning naturally.'
+    };
+    const guide = toneGuide[tone] || toneGuide.professional;
+    const prompt = `Rewrite this resume content. ${guide}\n\nContent: "${content}"\n\nReturn only the rewritten text.`;
+    let aiResponse = await getAIResponse(prompt);
+    if (!aiResponse) aiResponse = content;
+    await AILog.create({ userId: req.user._id, prompt, aiResponse, type: 'improve' });
+    res.json({ rewritten: aiResponse });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const generateBulletPoints = async (req, res) => {
+  try {
+    const { description, role } = req.body;
+    const prompt = `Convert this into 3-5 achievement bullet points for a ${role || 'professional'} resume. Each bullet: start with action verb, quantify results. Return ONLY a JSON array of strings, no other text.\n\nDescription: "${description}"`;
+    let aiResponse = await getAIResponse(prompt);
+    let bullets;
+    if (aiResponse) {
+      try { bullets = JSON.parse(aiResponse); } catch {
+        const match = aiResponse.match(/\[[\s\S]*?\]/);
+        if (match) { try { bullets = JSON.parse(match[0]); } catch { bullets = null; } }
+      }
+    }
+    if (!bullets || !Array.isArray(bullets)) {
+      bullets = ['Delivered measurable results through strategic initiatives and team collaboration.'];
+    }
+    await AILog.create({ userId: req.user._id, prompt, aiResponse: JSON.stringify(bullets), type: 'analysis' });
+    res.json({ bullets });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { generateSummary, improveContent, generateSkills, generateCoverLetter, generateResume, analyzeResumeQuality, tailorToJob, rewriteContent, generateBulletPoints };

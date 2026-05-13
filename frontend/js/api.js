@@ -59,7 +59,9 @@ const api = {
   generateCoverLetter: (data) => api.request('/ai/generate-cover-letter', { method: 'POST', body: data }),
   generateResume: (data) => api.request('/ai/generate-resume', { method: 'POST', body: data }),
   analyzeResume: (data) => api.request('/ai/analyze', { method: 'POST', body: data }),
-  tailorToJob: (data) => api.request('/ai/tailor-to-job', { method: 'POST', body: data })
+  tailorToJob: (data) => api.request('/ai/tailor-to-job', { method: 'POST', body: data }),
+  rewriteContent: (data) => api.request('/ai/rewrite', { method: 'POST', body: data }),
+  generateBulletPoints: (data) => api.request('/ai/bullet-points', { method: 'POST', body: data })
 };
 
 // Utility functions

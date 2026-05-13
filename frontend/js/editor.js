@@ -467,7 +467,9 @@ function openAIPanel(action) {
     improve: 'Improve Content',
     skills: 'Generate Skills',
     coverLetter: 'Generate Cover Letter',
-    tailor: 'Tailor to Job Description'
+    tailor: 'Tailor to Job Description',
+    rewrite: 'Rewrite Content',
+    bulletPoints: 'Generate Bullet Points'
   }[action] || 'AI Assistant';
 
   let html = '';
@@ -509,6 +511,25 @@ function openAIPanel(action) {
       <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Paste a job description below. The AI will rewrite your resume experience and skills to match the job requirements.</p>
       <div class="form-group"><label>Job Description</label><textarea class="form-textarea" id="aiJobDesc" rows="8" placeholder="Paste the full job description here..."></textarea></div>
       <button class="btn btn-primary btn-block" onclick="runAI('tailor')">🎯 Tailor Resume</button>
+      <div id="aiResult" style="margin-top:16px"></div>`;
+  } else if (action === 'rewrite') {
+    html = `
+      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Rewrite text in a different tone. Great for improving descriptions and summaries.</p>
+      <div class="form-group"><label>Content to Rewrite</label><textarea class="form-textarea" id="aiRewriteContent" rows="4" placeholder="Paste the text you want to rewrite..."></textarea></div>
+      <div class="form-group"><label>Tone</label><select class="form-select" id="aiTone">
+        <option value="professional">Professional</option>
+        <option value="concise">Concise</option>
+        <option value="achievement">Achievement-Focused</option>
+        <option value="ats">ATS-Optimized</option>
+      </select></div>
+      <button class="btn btn-primary btn-block" onclick="runAI('rewrite')">✍️ Rewrite</button>
+      <div id="aiResult" style="margin-top:16px"></div>`;
+  } else if (action === 'bulletPoints') {
+    html = `
+      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Convert a paragraph description into strong achievement bullet points.</p>
+      <div class="form-group"><label>Description</label><textarea class="form-textarea" id="aiBulletDesc" rows="4" placeholder="Paste a job description or achievement paragraph..."></textarea></div>
+      <div class="form-group"><label>Role (optional)</label><input class="form-input" id="aiBulletRole" placeholder="e.g. Software Engineer"></div>
+      <button class="btn btn-primary btn-block" onclick="runAI('bulletPoints')">🔫 Generate Bullet Points</button>
       <div id="aiResult" style="margin-top:16px"></div>`;
   }
   document.getElementById('aiModalBody').innerHTML = html;
@@ -582,6 +603,26 @@ async function runAI(action) {
         closeModal();
         showToast('Resume tailored to job!', 'success');
       }
+    } else if (action === 'rewrite') {
+      const content = document.getElementById('aiRewriteContent')?.value;
+      const tone = document.getElementById('aiTone')?.value || 'professional';
+      if (!content || !content.trim()) {
+        resultEl.innerHTML = '<div class="alert alert-error show">Paste content to rewrite first.</div>';
+        return;
+      }
+      const data = await api.rewriteContent({ content, tone });
+      resultEl.innerHTML = `<div class="ai-panel"><h4>✨ Rewritten (${tone})</h4><p>${data.rewritten}</p><button class="btn btn-primary btn-sm" onclick="applyAIResult('rewrite', '${escapeHtml(data.rewritten)}')">Apply</button></div>`;
+    } else if (action === 'bulletPoints') {
+      const description = document.getElementById('aiBulletDesc')?.value;
+      const role = document.getElementById('aiBulletRole')?.value || '';
+      if (!description || !description.trim()) {
+        resultEl.innerHTML = '<div class="alert alert-error show">Paste a description first.</div>';
+        return;
+      }
+      const data = await api.generateBulletPoints({ description, role });
+      if (data.bullets && data.bullets.length) {
+        resultEl.innerHTML = `<div class="ai-panel"><h4>🎯 Bullet Points</h4><ul style="margin:8px 0;padding-left:20px">${data.bullets.map(b => `<li style="font-size:13px;margin-bottom:6px">${escapeHtml(b)}</li>`).join('')}</ul><button class="btn btn-primary btn-sm" onclick="applyBulletPoints('${escapeHtml(JSON.stringify(data.bullets))}')">Apply to Current Description</button></div>`;
+      }
     }
   } catch (e) {
     resultEl.innerHTML = `<div class="alert alert-error show">Failed: ${e.message}</div>`;
@@ -595,9 +636,27 @@ function applyAIResult(type, content) {
   } else if (type === 'improve') {
     const descField = document.querySelector('.section-content.active textarea[data-field="description"]');
     if (descField) { descField.value = content; triggerSave(); }
+  } else if (type === 'rewrite') {
+    const descField = document.querySelector('.section-content.active textarea[data-field="description"], .section-content.active textarea[id="summary"]');
+    if (descField) { descField.value = content; triggerSave(); }
   }
   closeModal();
   showToast('Applied!', 'success');
+}
+
+function applyBulletPoints(bulletsJson) {
+  try {
+    const bullets = JSON.parse(bulletsJson);
+    if (Array.isArray(bullets)) {
+      const descField = document.querySelector('.section-content.active textarea[data-field="description"]');
+      if (descField) {
+        descField.value = bullets.map(b => '• ' + b).join('\n');
+        triggerSave();
+        closeModal();
+        showToast('Bullet points applied!', 'success');
+      }
+    }
+  } catch {}
 }
 
 // --- Mobile Editor Toggle ---
