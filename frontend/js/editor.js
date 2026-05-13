@@ -56,6 +56,7 @@ function populateEditor() {
   setVal('professionalTitle', r.personalInfo.title);
   setVal('summary', r.personalInfo.summary);
   document.getElementById('resumeTitle').value = r.title || 'Untitled Resume';
+  document.getElementById('primaryColor').value = r.customization?.primaryColor || '#2563eb';
 
   // Education
   renderEducation();
@@ -100,6 +101,9 @@ function collectSectionData() {
     },
     title: getVal('resumeTitle') || 'Untitled Resume',
     template: document.getElementById('templateSelect')?.value || 'modern',
+    customization: {
+      primaryColor: document.getElementById('primaryColor')?.value || '#2563eb'
+    },
     education: collectArrayData('education'),
     experience: collectArrayData('experience'),
     skills: collectArrayData('skills'),
@@ -127,6 +131,9 @@ function collectArrayData(prefix) {
     if (data.technologies && typeof data.technologies === 'string') {
       data.technologies = data.technologies.split(',').map(t => t.trim()).filter(Boolean);
     }
+    if (data.achievements && typeof data.achievements === 'string') {
+      data.achievements = data.achievements.split('\n').map(a => a.trim()).filter(Boolean);
+    }
     return data;
   });
 }
@@ -147,6 +154,7 @@ function renderEducationItem(item, i) {
       <div class="form-group"><label>Start</label><input class="form-input" data-field="startDate" value="${escapeHtml(item.startDate || '')}"></div>
       <div class="form-group"><label>End</label><input class="form-input" data-field="endDate" value="${escapeHtml(item.endDate || '')}"></div>
     </div>
+    <div class="form-group"><label>GPA</label><input class="form-input" data-field="gpa" placeholder="e.g. 8.5/10" value="${escapeHtml(item.gpa || '')}"></div>
     <div class="form-group"><label>Description</label><textarea class="form-textarea" data-field="description">${escapeHtml(item.description || '')}</textarea></div>
   </div>`;
 }
@@ -162,11 +170,16 @@ function renderExperienceItem(item, i) {
     <div class="entry-header"><h4>${item.position || 'Experience ' + (i+1)}</h4><button class="remove-btn" onclick="removeItem(this)">✕</button></div>
     <div class="form-group"><label>Company</label><input class="form-input" data-field="company" value="${escapeHtml(item.company || '')}"></div>
     <div class="form-group"><label>Position</label><input class="form-input" data-field="position" value="${escapeHtml(item.position || '')}"></div>
+    <div class="form-group"><label>Location</label><input class="form-input" data-field="location" value="${escapeHtml(item.location || '')}"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="form-group"><label>Start</label><input class="form-input" data-field="startDate" value="${escapeHtml(item.startDate || '')}"></div>
       <div class="form-group"><label>End</label><input class="form-input" data-field="endDate" value="${escapeHtml(item.endDate || '')}"></div>
     </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:8px">
+      <label><input type="checkbox" data-field="current" ${item.current ? 'checked' : ''}> Currently working here</label>
+    </div>
     <div class="form-group"><label>Description</label><textarea class="form-textarea" data-field="description">${escapeHtml(item.description || '')}</textarea></div>
+    <div class="form-group"><label>Achievements (one per line)</label><textarea class="form-textarea" data-field="achievements" rows="3" placeholder="Led a team of 5 engineers...">${escapeHtml((item.achievements || []).join('\n'))}</textarea></div>
   </div>`;
 }
 
@@ -233,6 +246,11 @@ function renderProjectItem(item, i) {
     <div class="form-group"><label>Title</label><input class="form-input" data-field="title" value="${escapeHtml(item.title || '')}"></div>
     <div class="form-group"><label>Description</label><textarea class="form-textarea" data-field="description">${escapeHtml(item.description || '')}</textarea></div>
     <div class="form-group"><label>Technologies (comma separated)</label><input class="form-input" data-field="technologies" value="${escapeHtml((item.technologies || []).join(', '))}"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group"><label>Start</label><input class="form-input" data-field="startDate" value="${escapeHtml(item.startDate || '')}"></div>
+      <div class="form-group"><label>End</label><input class="form-input" data-field="endDate" value="${escapeHtml(item.endDate || '')}"></div>
+    </div>
+    <div class="form-group"><label>URL</label><input class="form-input" data-field="url" placeholder="https://..." value="${escapeHtml(item.url || '')}"></div>
   </div>`;
 }
 
@@ -240,7 +258,7 @@ function addItem(group) {
   const container = document.getElementById(group + 'List');
   const template = {
     education: { institution: '', degree: '', field: '', startDate: '', endDate: '', description: '' },
-    experience: { company: '', position: '', location: '', startDate: '', endDate: '', description: '' },
+    experience: { company: '', position: '', location: '', startDate: '', endDate: '', current: false, description: '', achievements: [] },
     skills: { name: '', level: 'intermediate' },
     certifications: { name: '', issuer: '', date: '', url: '' },
     achievements: { title: '', description: '' },
@@ -292,6 +310,7 @@ function triggerSave() {
   currentResume.certifications = data.certifications;
   currentResume.achievements = data.achievements;
   currentResume.projects = data.projects;
+  currentResume.customization = { ...currentResume.customization, ...data.customization };
   renderPreview();
   updateLocalPreview();
   debouncedServerSave();
@@ -545,45 +564,6 @@ async function runAI(action) {
   }
 }
 
-function getSuggestions() {
-  const r = currentResume;
-  if (!r) return;
-  const info = r.personalInfo || {};
-  const suggestions = [];
-  if (!info.summary || info.summary.length < 20) suggestions.push({ type: 'warning', msg: 'Add a professional summary (3-4 sentences) to grab recruiter attention.' });
-  if (!info.email) suggestions.push({ type: 'warning', msg: 'Missing email address — recruiters need a way to contact you.' });
-  if (!info.phone) suggestions.push({ type: 'info', msg: 'Consider adding a phone number for direct contact.' });
-  if (!info.linkedin) suggestions.push({ type: 'tip', msg: 'Add your LinkedIn profile — 87% of recruiters use it.' });
-  if (!info.github) suggestions.push({ type: 'tip', msg: 'Add your GitHub profile to showcase your work — especially important for tech roles.' });
-  if (!info.location) suggestions.push({ type: 'info', msg: 'Adding your location helps with local job matching.' });
-  if (!(r.experience || []).length) suggestions.push({ type: 'warning', msg: 'No experience entries. Add work history to strengthen your resume.' });
-  (r.experience || []).forEach((exp, i) => {
-    if (!exp.description || exp.description.length < 30) suggestions.push({ type: 'warning', msg: `Experience #${i+1} (${exp.position || exp.company || 'entry'}) description is too short. Add achievements with quantified results.` });
-    if (exp.description && !/\d/.test(exp.description)) suggestions.push({ type: 'tip', msg: `Experience #${i+1}: Add numbers (%, $, people, etc.) to quantify your impact.` });
-  });
-  if (!(r.education || []).length) suggestions.push({ type: 'info', msg: 'No education entries. Add your academic background.' });
-  if (!(r.skills || []).filter(s => s.name).length) suggestions.push({ type: 'warning', msg: 'No skills listed. Add relevant skills for ATS matching.' });
-  if ((r.skills || []).filter(s => s.name).length < 5) suggestions.push({ type: 'tip', msg: 'List at least 5-10 skills for better ATS keyword matching.' });
-  (r.education || []).forEach((edu, i) => {
-    if (!edu.description && (!edu.field || !edu.degree)) suggestions.push({ type: 'info', msg: `Education #${i+1}: Add degree/field details.` });
-  });
-  if ((r.certifications || []).length && !(r.certifications || []).filter(c => c.name).length) suggestions.push({ type: 'tip', msg: 'Certifications listed but missing names — fill them in.' });
-
-  const modal = document.getElementById('aiModal');
-  modal.classList.add('show');
-  document.getElementById('aiModalTitle').textContent = '✅ Resume Suggestions';
-  const body = document.getElementById('aiModalBody');
-  if (!suggestions.length) {
-    body.innerHTML = '<div class="ai-panel"><h4>🌟 Great Resume!</h4><p>Your resume looks solid. No major improvements needed.</p></div>';
-  } else {
-    body.innerHTML = suggestions.map((s, i) => `
-      <div class="ai-panel suggestion-${s.type}" style="border-left:4px solid ${s.type === 'warning' ? 'var(--warning)' : s.type === 'info' ? 'var(--primary)' : 'var(--success)'};padding:14px 16px;margin-bottom:10px">
-        <p style="font-size:13px;color:var(--text);margin:0">${s.msg}</p>
-      </div>
-    `).join('');
-  }
-}
-
 function applyAIResult(type, content) {
   if (type === 'summary') {
     document.getElementById('summary').value = content;
@@ -626,7 +606,26 @@ async function getSuggestions() {
     }
     const icons = { warning: '⚠️', info: 'ℹ️', tip: '💡' };
     const colors = { warning: 'var(--warning)', info: 'var(--primary)', tip: 'var(--success)' };
-    let html = `<p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">Found ${suggestions.length} suggestion${suggestions.length > 1 ? 's' : ''} to improve your resume:</p>`;
+
+    // Calculate ATS Score
+    let score = 100;
+    suggestions.forEach(s => {
+      if (s.type === 'warning') score -= 10;
+      if (s.type === 'info') score -= 5;
+      if (s.type === 'tip') score -= 3;
+    });
+    score = Math.max(0, Math.min(100, score));
+    const scoreColor = score >= 80 ? 'var(--success)' : score >= 50 ? 'var(--warning)' : '#ef4444';
+
+    let html = `
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:36px;font-weight:800;color:${scoreColor}">${score}/100</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">ATS Resume Score</div>
+        <div style="width:100%;height:8px;background:#e2e8f0;border-radius:4px;margin-top:8px;overflow:hidden">
+          <div style="width:${score}%;height:100%;background:${scoreColor};border-radius:4px;transition:width 0.5s"></div>
+        </div>
+      </div>
+      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">${suggestions.length > 0 ? `Found ${suggestions.length} suggestion${suggestions.length > 1 ? 's' : ''} to improve your resume:` : 'No issues found!'}</p>`;
     suggestions.forEach((s, i) => {
       const icon = icons[s.type] || 'ℹ️';
       const color = colors[s.type] || 'var(--text-secondary)';
