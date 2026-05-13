@@ -1,1 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => loadNavbar('home'));
+document.addEventListener('DOMContentLoaded', () => {
+  loadNavbar('home');
+  initScrollReveal();
+});
+
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+}
