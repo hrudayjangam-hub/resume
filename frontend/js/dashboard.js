@@ -17,10 +17,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadStats() {
   try {
     const resumes = await api.getResumes();
-    document.getElementById('totalResumes').textContent = resumes.length;
-    document.getElementById('recentEdits').textContent = resumes.filter(r => {
+    const total = document.getElementById('totalResumes');
+    const recent = document.getElementById('recentEdits');
+    const recentCount = resumes.filter(r => {
       return new Date(r.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     }).length;
+    if (typeof animateCounter === 'function') {
+      animateCounter(total, resumes.length);
+      animateCounter(recent, recentCount);
+    } else {
+      total.textContent = resumes.length;
+      recent.textContent = recentCount;
+    }
   } catch (e) {
     console.error('Failed to load stats:', e);
   }
@@ -38,7 +46,7 @@ async function loadResumes() {
     }
     empty.style.display = 'none';
     grid.innerHTML = resumes.map(r => `
-      <div class="resume-card fade-in" onclick="openResume('${r._id}')">
+      <div class="resume-card card-tilt card-shine fade-in" onclick="openResume('${r._id}')">
         <div class="preview">📄</div>
         <div class="info">
           <h3>${r.title || 'Untitled Resume'}</h3>

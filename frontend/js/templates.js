@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   translatePage();
   const grid = document.getElementById('templateGrid');
   grid.innerHTML = templates.map(t => `
-    <div class="template-card fade-in" data-template="${t.id}" onclick="selectTemplate('${t.id}')">
+      <div class="template-card card-tilt card-shine fade-in" data-template="${t.id}" onclick="selectTemplate('${t.id}')">
       <div class="template-preview" style="background: linear-gradient(135deg, ${t.color}11, ${t.color}22); color: ${t.color}">
         ${t.icon}
       </div>

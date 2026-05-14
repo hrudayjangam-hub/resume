@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - ResumeAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=4">
+  <link rel="stylesheet" href="/css/style.css?v=5">
 </head>
 <body>
   <nav class="navbar"></nav>
@@ -40,25 +40,25 @@
         </div>
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
+      <div class="stats-grid stagger">
+        <div class="stat-card card-tilt card-shine glass-glow">
           <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)">📄</div>
-          <div class="stat-value" id="totalResumes">0</div>
+          <div class="stat-value"><span class="stat-count" id="totalResumes">0</span></div>
           <div class="stat-label">Total Resumes</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-tilt card-shine glass-glow">
           <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981">⏰</div>
-          <div class="stat-value" id="recentEdits">0</div>
+          <div class="stat-value"><span class="stat-count" id="recentEdits">0</span></div>
           <div class="stat-label">Edited This Week</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-tilt card-shine glass-glow">
           <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b">🎯</div>
-          <div class="stat-value">ATS</div>
+          <div class="stat-value" style="-webkit-text-fill-color:initial">ATS</div>
           <div class="stat-label">Optimized Templates</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-tilt card-shine glass-glow">
           <div class="stat-icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6">⚡</div>
-          <div class="stat-value">AI</div>
+          <div class="stat-value" style="-webkit-text-fill-color:initial">AI</div>
           <div class="stat-label">Smart Assistance</div>
         </div>
       </div>
@@ -105,6 +105,7 @@
   <script src="/js/translations.js"></script>
   <script src="/js/auth.js?v=3"></script>
   <script src="/js/ai-assistant.js"></script>
+  <script src="/js/ui-enhancements.js"></script>
   <script src="/js/dashboard.js?v=3"></script>
 </body>
 </html>
