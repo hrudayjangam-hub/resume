@@ -441,6 +441,47 @@ function renderPreview() {
       </div>
     `, primaryColor)}
   `;
+  updateATSScore();
+}
+
+function calcATSScore() {
+  var r = currentResume;
+  if (!r) return 0;
+  var score = 0;
+  var info = r.personalInfo || {};
+  if (info.fullName) score += 8;
+  if (info.email) score += 8;
+  if (info.phone) score += 6;
+  if (info.summary && info.summary.length > 30) score += 12;
+  if (info.title) score += 6;
+  if (r.experience && r.experience.length) {
+    score += Math.min(r.experience.length * 6, 18);
+    for (var i = 0; i < r.experience.length; i++) {
+      if (r.experience[i].description && r.experience[i].description.length > 40) score += 3;
+    }
+  }
+  if (r.education && r.education.length) score += Math.min(r.education.length * 5, 10);
+  if (r.skills && r.skills.length >= 3) score += Math.min(r.skills.length * 2, 10);
+  if (r.certifications && r.certifications.length) score += 6;
+  if (r.achievements && r.achievements.length) score += 6;
+  score += info.linkedin ? 4 : 0;
+  score += info.github ? 4 : 0;
+  score += info.location ? 4 : 0;
+  return Math.min(Math.round(score), 100);
+}
+
+function updateATSScore() {
+  var score = calcATSScore();
+  var valEl = document.getElementById('atsScoreValue');
+  var ringEl = document.getElementById('atsRingFg');
+  if (!valEl || !ringEl) return;
+  valEl.textContent = score;
+  var circumference = 113;
+  var offset = circumference - (score / 100) * circumference;
+  ringEl.style.strokeDashoffset = offset;
+  var color = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444';
+  ringEl.style.stroke = color;
+  valEl.style.color = color;
 }
 
 function renderPreviewSection(title, key, icon, items, renderFn, primaryColor) {

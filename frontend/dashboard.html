@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - ResumeAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=5">
+  <link rel="stylesheet" href="/css/style.css?v=6">
 </head>
 <body>
   <nav class="navbar"></nav>
@@ -63,11 +63,14 @@
         </div>
       </div>
 
-      <div id="emptyState" class="empty-state" style="display:none">
-        <div class="empty-icon">📄</div>
+      <div id="emptyState" class="empty-state empty-state-glow" style="display:none">
+        <div style="position:relative;display:inline-block;margin-bottom:16px">
+          <div class="empty-icon">📄</div>
+          <div class="empty-ring"></div>
+        </div>
         <h3>No resumes yet</h3>
         <p>Create your first AI-powered resume to get started</p>
-        <button class="btn btn-primary btn-lg" onclick="createNewResume()">Create Your First Resume</button>
+        <button class="btn btn-primary btn-lg" onclick="createNewResume()">🚀 Create Your First Resume</button>
       </div>
 
       <div class="resume-grid" id="resumeGrid"></div>

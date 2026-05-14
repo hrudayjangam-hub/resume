@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume Editor - ResumeAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=5">
+  <link rel="stylesheet" href="/css/style.css?v=6">
 </head>
 <body>
   <nav class="navbar"></nav>
@@ -19,6 +19,16 @@
       <div style="display:flex;gap:8px;margin-bottom:16px">
         <button class="btn btn-primary btn-sm" id="saveBtn" style="flex:1">💾 Save</button>
         <button class="btn btn-secondary btn-sm" id="downloadPdfBtn" style="flex:1">📄 PDF</button>
+      </div>
+      <div class="ats-score-ring" id="atsScoreRing" style="margin-bottom:16px;width:100%">
+        <svg viewBox="0 0 40 40">
+          <circle class="ring-bg" cx="20" cy="20" r="18"/>
+          <circle class="ring-fg" id="atsRingFg" cx="20" cy="20" r="18"/>
+        </svg>
+        <div>
+          <span class="ring-score" id="atsScoreValue">--</span>
+          <span class="ring-label">ATS Score</span>
+        </div>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openAIPanel('generateResume')" style="flex:1;min-width:120px">🚀 Auto Resume</button>
@@ -58,7 +68,7 @@
           <div class="form-group"><label>GitHub</label><input class="form-input" id="github" placeholder="github.com/johndoe"></div>
           <div class="form-group"><label>Portfolio</label><input class="form-input" id="portfolio" placeholder="johndoe.com"></div>
         </div>
-        <div class="form-group"><label>Professional Summary</label><textarea class="form-textarea" id="summary" rows="4" placeholder="Write a brief professional summary..."></textarea></div>
+          <div class="form-group"><label>Professional Summary</label><textarea class="form-textarea auto-resize" id="summary" rows="4" placeholder="Write a brief professional summary..."></textarea></div>
         <div class="form-group"><label>Template</label><select class="form-select" id="templateSelect">
           <option value="modern">Modern</option>
           <option value="minimal">Minimal</option>
