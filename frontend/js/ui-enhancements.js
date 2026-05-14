@@ -1,32 +1,6 @@
 (function () {
   // ============================================================
-  // 1. Cursor Glow Follower
-  // ============================================================
-  var cursorGlow = null;
-  var cursorTimeout = null;
-
-  function initCursorGlow() {
-    cursorGlow = document.createElement('div');
-    cursorGlow.className = 'cursor-glow';
-    document.body.appendChild(cursorGlow);
-
-    document.addEventListener('mousemove', function (e) {
-      cursorGlow.style.left = e.clientX + 'px';
-      cursorGlow.style.top = e.clientY + 'px';
-      cursorGlow.classList.add('visible');
-      clearTimeout(cursorTimeout);
-      cursorTimeout = setTimeout(function () {
-        cursorGlow.classList.remove('visible');
-      }, 2000);
-    });
-
-    document.addEventListener('mouseleave', function () {
-      cursorGlow.classList.remove('visible');
-    });
-  }
-
-  // ============================================================
-  // 2. Button Ripple Effect
+  // 1. Button Ripple Effect
   // ============================================================
   function initRipple() {
     document.addEventListener('click', function (e) {
@@ -324,7 +298,6 @@
   // Init
   // ============================================================
   function init() {
-    initCursorGlow();
     initRipple();
     initCardTilt();
     initPageEntrance();
