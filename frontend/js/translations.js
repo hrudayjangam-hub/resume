@@ -425,7 +425,26 @@ const translations = {
 let currentLang = localStorage.getItem('lang') || 'en';
 
 function t(key) {
-  return translations[currentLang]?.[key] ?? translations.en[key] ?? key;
+  try {
+    return translations[currentLang]?.[key] ?? translations.en[key] ?? key;
+  } catch (_) {
+    return key;
+  }
+}
+
+function translatePage() {
+  try {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      var translated = t(key);
+      if (translated !== key) el.innerHTML = translated;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n-placeholder');
+      var translated = t(key);
+      if (translated !== key) el.placeholder = translated;
+    });
+  } catch (_) {}
 }
 
 function setLanguage(lang) {
