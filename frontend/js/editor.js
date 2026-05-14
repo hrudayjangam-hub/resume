@@ -291,16 +291,27 @@ function escapeHtml(str) {
 }
 
 // --- Smart Refresh ---
-function setupAutoSave() {
-  const debouncedSave = debounce(triggerSave, 500);
-  document.querySelectorAll('.editor-sidebar input, .editor-sidebar textarea, .editor-sidebar select').forEach(el => {
-    el.addEventListener('input', debouncedSave);
-    el.addEventListener('change', debouncedSave);
-  });
+var refreshTimer = null;
+var saveTimer = null;
+var pendingSave = false;
+
+function showSaveStatus(status) {
+  var indicator = document.getElementById('saveIndicator');
+  if (!indicator) return;
+  var statuses = {
+    saved: { text: '&#10003; Saved', color: 'var(--success)' },
+    saving: { text: '&#8987; Saving...', color: 'var(--primary)' },
+    unsaved: { text: '&#9679; Unsaved', color: 'var(--warning)' },
+    error: { text: '&#10007; Save failed', color: 'var(--danger)' }
+  };
+  var s = statuses[status] || statuses.unsaved;
+  indicator.innerHTML = s.text;
+  indicator.style.color = s.color;
+  clearTimeout(indicator._hideTimer);
 }
 
 function triggerSave() {
-  const data = collectSectionData();
+  var data = collectSectionData();
   if (!currentResume || !resumeId) return;
   currentResume.personalInfo = data.personalInfo;
   currentResume.title = data.title;
@@ -312,32 +323,55 @@ function triggerSave() {
   currentResume.achievements = data.achievements;
   currentResume.projects = data.projects;
   currentResume.customization = { ...currentResume.customization, ...data.customization };
-  renderPreview();
-  updateLocalPreview();
-  debouncedServerSave();
+
+  if (!pendingSave) showSaveStatus('unsaved');
+
+  if (refreshTimer) cancelAnimationFrame(refreshTimer);
+  refreshTimer = requestAnimationFrame(function () {
+    renderPreview();
+    refreshTimer = null;
+  });
+
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(flushSave, 2000);
 }
 
-async function saveToServer() {
+async function flushSave() {
   if (!currentResume || !resumeId) return;
-  const data = { ...currentResume };
-  delete data._id;
-  delete data.userId;
-  delete data.createdAt;
-  delete data.updatedAt;
+  pendingSave = true;
+  showSaveStatus('saving');
+  var data = {};
+  Object.keys(currentResume).forEach(function (k) {
+    if (k !== '_id' && k !== 'userId' && k !== 'createdAt' && k !== 'updatedAt') data[k] = currentResume[k];
+  });
   try {
     await api.updateResume(resumeId, data);
+    showSaveStatus('saved');
+    setTimeout(function () {
+      var ind = document.getElementById('saveIndicator');
+      if (ind) ind.textContent = '';
+    }, 3000);
   } catch (e) {
     console.error('Save failed:', e);
+    showSaveStatus('error');
   }
+  pendingSave = false;
 }
 
-const debouncedServerSave = debounce(saveToServer, 1000);
-
-const saveFullResume = debounce(async () => {
-  triggerSave();
-  await saveToServer();
+async function saveFullResume() {
+  if (saveTimer) clearTimeout(saveTimer);
+  await flushSave();
   showToast('Resume saved!', 'success');
-}, 300);
+}
+
+function setupAutoSave() {
+  var els = document.querySelectorAll('.editor-sidebar input, .editor-sidebar textarea, .editor-sidebar select');
+  var debounced = debounce(triggerSave, 120);
+  for (var i = 0; i < els.length; i++) {
+    els[i].addEventListener('input', debounced);
+    els[i].addEventListener('change', debounced);
+  }
+}
 
 // --- Live Preview ---
 function renderPreview() {
